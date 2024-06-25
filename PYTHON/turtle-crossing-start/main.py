@@ -7,18 +7,39 @@ from scoreboard import Scoreboard
 
 screen = Screen()
 screen.setup(width=600, height=600)
+screen.title("Turtle Crossing")
+scoreboard = Scoreboard()
 screen.tracer(0)
 
 
 
 player = Player()
-cars = CarManager()
+car_manager = CarManager()
 screen.listen()
 screen.onkey(player.move,"Up")
 
 game_is_on = True
 while game_is_on:
     time.sleep(0.1)
+    scoreboard.update_level()
     screen.update()
-    cars.move_car()
+    car_manager.create_car()
+    car_manager.move_cars()
+
+    # Collision with Turtle and Cars
+    for car in car_manager.all_cars:
+        if player.distance(car) < 20 :
+            game_is_on = False
+            scoreboard.game_over()
+            
+    # Detect successful Crossing
+    if player.is_at_finish_line():
+        player.go_to_start()
+        car_manager.level_up()
+        scoreboard.level_up()
+
+
+screen.exitonclick()
+
+    
 
